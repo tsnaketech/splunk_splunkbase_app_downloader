@@ -1,0 +1,6 @@
+splunkbase:
+  username: "https"
+  password: "192.168.1.71"
+
+apps:
+  file: "apps.json"

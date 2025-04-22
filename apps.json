@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Splunk Add-on for Microsoft Windows",
+        "uid": 742,
+        "appid": "Splunk_TA_windows",
+        "updated_time": "Wed, 13 Nov 2024 03:53:58 GMT",
+        "version": "9.0.1"
+    },
+    {
+        "name": "Splunk Common Information Model (CIM)",
+        "uid": 1621,
+        "appid": "Splunk_SA_CIM",
+        "updated_time": "Thu, 13 Mar 2025 22:15:12 GMT",
+        "version": "6.0.3"
+    },
+    {
+        "name": "Splunk Add-on for Unix and Linux",
+        "uid": 833,
+        "appid": "Splunk_TA_nix",
+        "updated_time": "Mon, 03 Feb 2025 14:45:58 GMT",
+        "version": "10.0.0"
+    }
+]
