@@ -57,7 +57,7 @@ class SplunkbaseDownloader:
     @staticmethod
     def _setup_logger() -> logging.Logger:
         """Configure and return a logger for the application."""
-        logger = logging.getLogger("AppsSplunkbaseDownloader")
+        logger = logging.getLogger("SplunkbaseDownloader")
         logger.setLevel(logging.INFO)
 
         # Console handler
