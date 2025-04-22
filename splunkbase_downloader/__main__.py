@@ -12,7 +12,7 @@ except ImportError:
 def main():
     """
     Main entry point to the application.
-    Configures and starts downloading Splunk configurations.
+    Configures and starts downloading Splunk apps.
     """
     logger = logging.getLogger(__name__)
 
