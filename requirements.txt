@@ -1,0 +1,4 @@
+configparser
+requests
+python-dotenv
+PyYAML
