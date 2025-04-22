@@ -39,6 +39,7 @@ class SplunkbaseDownloader:
         self.args_splunkbase = self._config.config_data.get("splunkbase", {})
         self.args_apps = self._config.config_data.get("apps", {})
         self.apps_file = self.args_apps.get("file", None)
+        self.output = self.args_apps.get("output", "./")
         self.cookies = None
         self.logger = self._setup_logger()
 
@@ -46,11 +47,12 @@ class SplunkbaseDownloader:
         self._config.add_argument("--username", "-u", type=str, help="Splunkbase username", required=False)
         self._config.add_argument("--password", "-p", type=str, help="Splunkbase password", required=False)
         self._config.add_argument("--apps_file", "-a", type=str, help="Path to the apps list file", required=False)
+        self._config.add_argument("--output", "-o", type=str, help="Output directory", required=False)
         args = self._config.parser.parse_args()
 
         self._config.load_config_file(args.config)
         self._config.set_config_group(section="splunkbase", keys=["username", "password"], env_prefix="SPLUNK_ASD")
-        self._config.set_config_group(section="apps", keys=["file"], env_prefix="SPLUNK_ASD")
+        self._config.set_config_group(section="apps", keys=["file", "output"], env_prefix="SPLUNK_ASD")
 
     @staticmethod
     def _setup_logger() -> logging.Logger:
@@ -148,19 +150,24 @@ class SplunkbaseDownloader:
 
         file_name = f"{app_name}_{app_id}_{app_version}.tgz"
 
+        # Ensure the output directory exists
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        path = os.path.join(self.output, file_name)
+
         # Check if file already exists
-        if os.path.exists(file_name):
+        if os.path.exists(path):
             self.logger.info(f"Skipping download of {file_name} (already exists)")
             return None
 
         download_url = self.DOWNLOAD_API.format(app_id=app_id, version=app_version)
 
         try:
-            self.logger.info(f"Downloading {file_name}...")
+            self.logger.info(f"Downloading {path}...")
             response = requests.get(download_url, cookies=self.cookies)
 
             if response.status_code == 200:
-                with open(file_name, 'wb') as file:
+                with open(path, 'wb') as file:
                     file.write(response.content)
 
                 # Get update timestamp or use current time
@@ -168,10 +175,10 @@ class SplunkbaseDownloader:
                 if not updated_time:
                     updated_time = datetime.datetime.utcnow().isoformat() + "Z"
 
-                self.logger.info(f"Successfully downloaded {file_name}")
+                self.logger.info(f"Successfully downloaded {path}")
                 return updated_time
             else:
-                self.logger.error(f"Failed to download {file_name}. Status code: {response.status_code}")
+                self.logger.error(f"Failed to download {path}. Status code: {response.status_code}")
                 return None
 
         except Exception as e:
@@ -251,7 +258,7 @@ class SplunkbaseDownloader:
 
                 if not latest_version:
                     self.logger.warning(f"Could not retrieve latest version for {uid}")
-                    skipped_apps.append(f"{uid}_{current_version}")
+                    skipped_apps.append(f"{name}_{uid}_{current_version}")
                     continue
 
                 # Check if update is needed
@@ -264,12 +271,12 @@ class SplunkbaseDownloader:
                     if updated_time:
                         # Update app info in configuration file
                         self.update_apps_file(uid, latest_version, updated_time)
-                        downloaded_apps.append(f"{uid}_{latest_version}")
+                        downloaded_apps.append(f"{name}_{uid}_{latest_version}")
                     else:
-                        skipped_apps.append(f"{uid}_{latest_version}")
+                        skipped_apps.append(f"{name}_{uid}_{latest_version}")
                 else:
                     self.logger.info(f"App {uid} is up to date (version {current_version})")
-                    skipped_apps.append(f"{uid}_{current_version}")
+                    skipped_apps.append(f"{name}_{uid}_{current_version}")
 
             return downloaded_apps, skipped_apps
 

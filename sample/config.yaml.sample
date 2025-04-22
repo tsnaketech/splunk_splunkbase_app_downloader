@@ -4,3 +4,4 @@ splunkbase:
 
 apps:
   file: "apps.json"
+  output: "apps"

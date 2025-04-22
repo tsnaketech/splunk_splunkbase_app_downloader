@@ -3,3 +3,4 @@ config.yaml
 *.pyo
 *.pyd
 __pycache__/
+apps
