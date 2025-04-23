@@ -30,8 +30,7 @@ class SplunkbaseDownloader:
         Initialize the downloader with configuration files.
 
         Args:
-            config_file: Path to the login credentials file
-            apps_file: Path to the apps configuration file
+            kwargs: Configuration parameters
         """
 
         self._config = ConfigurationManager(**kwargs)
@@ -78,7 +77,6 @@ class SplunkbaseDownloader:
         Authenticate with Splunkbase using credentials from the config file.
 
         Raises:
-            FileNotFoundError: If login config file doesn't exist
             Exception: If authentication fails
         """
         try:
@@ -138,6 +136,7 @@ class SplunkbaseDownloader:
         Download a specific version of an app if it doesn't already exist.
 
         Args:
+            app_name: The name of the app
             app_id: The app's unique identifier
             app_version: The version to download
 
