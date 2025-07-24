@@ -321,6 +321,5 @@ def main():
         print(f"\nAn error occurred during execution: {str(e)}")
         sys.exit(1)
 
-
 if __name__ == '__main__':
     main()
